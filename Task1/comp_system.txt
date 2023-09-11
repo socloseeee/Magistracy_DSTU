@@ -1,3 +1,5 @@
+Команда: sudo lshw
+ОС: Ubuntu 22.04
 описание: Ноутбук
 продукт: GF63 Thin 8RCS (16R3.3)
 производитель: Micro-Star International Co., Ltd.
