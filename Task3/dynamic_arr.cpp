@@ -4,6 +4,7 @@
 // Функция для создания динамического массива указанного пользователем размера и заполнения его индексами
 int* createAndFillArray(int size) {
     int* arr = new int[size];
+    #pragma omp parallel for
     for (int i = 0; i < size; ++i) {
         arr[i] = i;
     }
@@ -12,7 +13,9 @@ int* createAndFillArray(int size) {
 
 // Функция для вывода содержимого массива в заданном пользователем диапазоне
 void printArrayRange(const int* arr, int start, int end) {
+    #pragma omp parallel for
     for (int i = start; i <= end; ++i) {
+        #pragma omp critical
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
@@ -47,7 +50,7 @@ void readArrayFromBinaryFile(const std::string& filename) {
         }
         std::cout << std::endl;
 
-        delete[] arr;
+        delete[] arr; 
         file.close();
     } else {
         std::cerr << "Ошибка при открытии файла для чтения." << std::endl;
