@@ -1,28 +1,37 @@
 #include <iostream>
 #include <fstream>
-#include <chrono> // Добавляем заголовочный файл для работы с временем
+#include <chrono>
+#include <thread>
+#include <vector>
+#include <mutex>
 
-// Функция для создания динамического массива указанного пользователем размера и заполнения его индексами
+std::mutex consoleMutex;
+
 int* createAndFillArray(int size) {
     int* arr = new int[size];
-    #pragma omp parallel for
+    std::vector<std<thread>> threads;
+
     for (int i = 0; i < size; ++i) {
-        arr[i] = i;
+        threads.emplace_back([i, &arr]() {
+            arr[i] = i;
+        });
     }
+
+    for (std::thread& t : threads) {
+        t.join();
+    }
+
     return arr;
 }
 
-// Функция для вывода содержимого массива в заданном пользователем диапазоне
 void printArrayRange(const int* arr, int start, int end) {
-    #pragma omp parallel for
+    std::lock_guard<std::mutex> lock(consoleMutex);
     for (int i = start; i <= end; ++i) {
-        #pragma omp critical
         std::cout << arr[i] << " ";
     }
     std::cout << std::endl;
 }
 
-// Функция для сохранения массива в двоичный файл
 void saveArrayToBinaryFile(const int* arr, int size, const std::string& filename) {
     std::ofstream file(filename, std::ios::binary);
     if (file.is_open()) {
